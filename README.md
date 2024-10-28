@@ -2,7 +2,7 @@
 
 ## Overview
 
-Solana-Escrow-Gambling is a smart contract built on Solana that facilitates a simple gambling game between two users. The game revolves around betting on the ETH/USDC price movement, where players bet whether the price will increase or decrease by 5%. The contract holds the entry fees in escrow and sends the funds to the winner once a price change condition is met.
+escrow-program is a smart contract built on Solana that facilitates a simple gambling game between two users. The game revolves around betting on the ETH/USDC price movement, where players bet whether the price will increase or decrease by 5%. The contract holds the entry fees in escrow and sends the funds to the winner once a price change condition is met.
 
 ## Task Overview
 
