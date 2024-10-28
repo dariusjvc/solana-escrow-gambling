@@ -1,5 +1,5 @@
-use crate::{instructions::fetch_price::fetch_price, state::game_state::GameState};
-use borsh::{BorshDeserialize, BorshSerialize};
+use crate::{state::game_state::GameState};
+use borsh::{BorshDeserialize};
 use solana_program::program_pack::Pack;
 use solana_program::{
     account_info::{next_account_info, AccountInfo},
@@ -31,7 +31,7 @@ pub fn close_game(
     let oracle_account = next_account_info(accounts_iter)?;
 
     // Deserialize the current game state from the escrow account
-    let mut game_state = GameState::try_from_slice(&escrow_account.try_borrow_data()?)?;
+    let game_state = GameState::try_from_slice(&escrow_account.try_borrow_data()?)?;
 
     // Ensure the game is  inactive
     if game_state.game_active {

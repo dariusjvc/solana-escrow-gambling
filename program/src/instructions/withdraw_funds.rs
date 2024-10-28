@@ -20,7 +20,7 @@ pub fn withdraw_funds(
 
     let accounts_iter = &mut accounts.iter();
 
-    let payer = next_account_info(accounts_iter)?; // Player 1
+    //let payer = next_account_info(accounts_iter)?; // Player 1
     let escrow_account = next_account_info(accounts_iter)?; // Escrow account holding the game state
     let escrow_token_account_authority = next_account_info(accounts_iter)?;
     let escrow_token_account = next_account_info(accounts_iter)?; // Escrow token account holding USDC

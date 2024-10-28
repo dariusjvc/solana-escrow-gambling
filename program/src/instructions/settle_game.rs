@@ -5,11 +5,10 @@ use solana_program::{
     account_info::{next_account_info, AccountInfo},
     entrypoint::ProgramResult,
     msg,
-    program::invoke,
     program_error::ProgramError,
     pubkey::Pubkey,
 };
-use spl_token::instruction::transfer as spl_transfer;
+
 use spl_token::state::Account as TokenAccount;
 
 pub fn settle_game(
