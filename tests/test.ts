@@ -87,15 +87,15 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
         return borsh.deserialize(GameStateSchema, GameState, buffer);
     }
 
-
     it("Create game", async () => {
+        logSeparator();
 
         const instruction_code = Buffer.from([0]);  // instruction_code as a single byte
 
         const player1_choice = true;  // true- -> 'increase', false -> 'decrease'
 
         //const entry_price = 0;
-        const entry_price = 100;
+        const entry_price = 2500;
 
         // The price given by the oracle has 8 decimal places
         const entry_price_in_micro_usdc = Math.round(entry_price * 100_000_000);
@@ -161,15 +161,16 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
                 console.error("Test failed: Game is not active");
             }
 
-            console.log(`Entry price is ${gameState.entry_price}`);
-            console.log(`Last price is ${gameState.last_price}`);
+            console.log(`Entry price is ${formatPrice(gameState.entry_price)} ETH/USDC`);
+            console.log(`Last price is ${formatPrice(gameState.last_price)} ETH/USDC`);
+            
 
         }
         console.log(`Escrow Token Account Balance: ${fundTokenBalance.value.uiAmount} USDC`);
     });
 
-
     it('Oracle Price', async () => {
+        logSeparator();
         const instruction = new TransactionInstruction({
             keys: [
                 { pubkey: usdcPriceAccount, isSigner: false, isWritable: false }, // Oráculo de precios
@@ -203,8 +204,8 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
 
                     if (priceLog) {
                         const price = priceLog.split('Price of ETH/USDC: ')[1]; // Extract the price from the log
-                        console.log(`The price of ETH/USDC is: ${price}`);
                         console.log("Test passed: Price successfully retrieved");
+                        console.log(`The price is: ${formatPrice(BigInt(price))} ETH/USDC`);
                     } else {
                         console.log('Price log not found');
                     }
@@ -233,12 +234,11 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
 
 
     it("Join game", async () => {
-
-
+        logSeparator();
         const instruction_code = Buffer.from([2]);
 
         //const last_price = 0;
-        const last_price = 100;
+        const last_price = 2500;
 
         // The price has 8 decimal places
         const last_price_in_micro_usdc = Math.round(last_price * 100_000_000);
@@ -321,13 +321,14 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
         console.log(`Player 1 Token Balance: ${player1Balance.value.uiAmount} USDC`);
         console.log(`Player 2 Token Balance: ${player2Balance.value.uiAmount} USDC`);
 
-        console.log(`Last price: ${gameState.last_price} ETH/USDC`);
+        console.log(`Last price: ${formatPrice(gameState.last_price)} ETH/USDC`);
 
 
     });
 
 
     it("Withdraw Game", async () => {
+        logSeparator();
         const instruction_code = 4;
         const data = Buffer.from([instruction_code]);
         const instruction = new TransactionInstruction({
@@ -391,11 +392,11 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
 
     for (let i = 0; i < 1; i++) {
         it("Settle game", async () => {
-
+            logSeparator();
             const instruction_code = Buffer.from([3]);
 
             //const last_price = 0;
-            const last_price = 200;
+            const last_price = 3000;
 
             // The price has 8 decimal places
             const last_price_in_micro_usdc = Math.round(last_price * 100_000_000);
@@ -492,6 +493,7 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
 
             console.log(`Player 1 Token Balance: ${player1Balance.value.uiAmount} USDC`);
             console.log(`Player 2 Token Balance: ${player2Balance.value.uiAmount} USDC`);
+            console.log(`Last price: ${formatPrice(gameState.last_price)} ETH/USDC`);
 
         });
 
@@ -499,7 +501,7 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
 
 
     it("Close game", async () => {
-
+        logSeparator();
         const instruction_code = Buffer.from([5]);
 
         const data = Buffer.concat([instruction_code]);
@@ -565,4 +567,13 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
 
 });
 
+function formatPrice(price: bigint, decimals: number = 8): string {
+    const priceStr = price.toString();
+    const integerPart = priceStr.slice(0, -decimals) || "0";
+    const decimalPart = priceStr.slice(-decimals).padStart(decimals, "0");
+    return `${integerPart}.${decimalPart}`;
+}
 
+function logSeparator() {
+    console.log('-------------------------------------------------');
+}
