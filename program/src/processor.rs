@@ -26,7 +26,7 @@ impl Processor {
             2 => join_game(program_id, accounts, instruction_data),// Player joins
             3 => settle_game(program_id, accounts, instruction_data),// Settle the game 
             4 => withdraw_funds(program_id, accounts),//
-            5 => close_game(program_id, accounts),//  Distribute winnings
+            5 => close_game(accounts),//  Distribute winnings
             _ => Err(ProgramError::InvalidInstructionData),
         }
     }

@@ -18,14 +18,14 @@ let PATH_TO_YOUR_SOLANA_PLAYER2_JSON = path.resolve(__dirname, '../wallets/playe
 let PATH_TO_YOUR_SOLANA_GAME_JSON = path.resolve(__dirname, '../wallets/escrow.json');
 
 
-let DEPLOYED_PROGRAM_ADDRESS = "FoqMdvAE1PEGyTMGBKrvhwAojWEH1n9soLLFBM7uvokE"
+let DEPLOYED_PROGRAM_ADDRESS = "93mVQnmfpFYUbZkBLE14gTrsgUSC72PDHm1LjpQdUrzL"
 let PAYER_TOKEN_ACCOUNT = "ESLp21gWPUmPMsTo4wJAPSVdY6hiBU4PPn8KuvqxgBKD"
 let PLAYER2_TOKEN_ACCOUNT = "6VCjhfe3njxWT4YqTKpQ7T6wkFHdn7QKpksfqa4wqiKj"
 let SCROW_TOKEN_ACCOUNT = "2E6TLrmeuzMitoRviPK5Fd4kiZPXj7MteZLxAppPDif6"
 const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 
 // Get oracles for mainnet here: https://www.pyth.network/developers/price-feed-ids#solana-stable
-// JBu1AL4obBcCMqKBBxhpWCNUt136ijcuMZLFvTP7iWdB (for Solana Miannet)
+// JBu1AL4obBcCMqKBBxhpWCNUt136ijcuMZLFvTP7iWdB (for Solana Mainnet)
 const usdcPriceAccount = new PublicKey("EdVCmQ9FSPcVe5YySXDPCRmc8aDQLKJ9xvYBMZPie1Vw"); // ETH/USDC Price Feed Account (Devnet)
 
 function createKeypairFromFile(path: string): Keypair {
@@ -34,7 +34,7 @@ function createKeypairFromFile(path: string): Keypair {
     )
 };
 
-describe("Tests of the escrow_program in the Solana devnet:", () => {
+describe("Testing the escrow_program on the Solana devnet:", () => {
 
     const connection = new Connection(`https://api.devnet.solana.com`, 'confirmed'); // For solana devnet
     //const connection = new Connection(`http://localhost:8899`, 'confirmed'); // For solana test validator
@@ -409,16 +409,13 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
             // Prepare the instruction for the settle_game function
             const instruction = new TransactionInstruction({
                 keys: [
-                    { pubkey: payer.publicKey, isSigner: true, isWritable: true },  // Player 1 (payer)
-                    { pubkey: player2.publicKey, isSigner: true, isWritable: true }, // Player 2
                     { pubkey: gameAccount.publicKey, isSigner: false, isWritable: true }, // Existing game account (escrow for game state, NOT lamports)
-                    { pubkey: escrowTokenAccountAuthority.publicKey, isSigner: true, isWritable: true },  // Token account holding the USDC (Escrow token account)
-                    { pubkey: escrowTokenAccount, isSigner: false, isWritable: true },  // Token account holding the USDC (Escrow token account)
                     { pubkey: payerTokenAccount, isSigner: false, isWritable: true },  // Player 1's token account (USDC)
                     { pubkey: player2TokenAccount, isSigner: false, isWritable: true },  // Player 2's token account (USDC)
-                    { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },  // Token program for SPL tokens
                     { pubkey: usdcPriceAccount, isSigner: false, isWritable: false }, // Pyth Oracle
                     { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }, // System program
+                    { pubkey: payer.publicKey, isSigner: true, isWritable: true },  // Player 1 (payer)
+                    { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },  // Token program for SPL tokens
                 ],
                 programId: PROGRAM_ID,
                 data: data, // Data to trigger the `settle_game` instruction
@@ -433,7 +430,7 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
                 await sendAndConfirmTransaction(
                     connection,
                     transaction,
-                    [payer, player2, escrowTokenAccountAuthority]  // Both players sign the transaction
+                    [payer]  // Both players sign the transaction
                 );
             } catch (error) {
                 // Catch the error and handle the case when the game is inactive or Player 2 is missing
@@ -503,16 +500,13 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
 
         const instruction = new TransactionInstruction({
             keys: [
-                { pubkey: payer.publicKey, isSigner: true, isWritable: true },  // Player 1 (payer)
-                { pubkey: player2.publicKey, isSigner: true, isWritable: true }, // Player 2
                 { pubkey: gameAccount.publicKey, isSigner: false, isWritable: true }, // Existing game account (escrow for game state, NOT lamports)
                 { pubkey: escrowTokenAccountAuthority.publicKey, isSigner: true, isWritable: true },  // Token account holding the USDC (Escrow token account)
                 { pubkey: escrowTokenAccount, isSigner: false, isWritable: true },  // Token account holding the USDC (Escrow token account)
                 { pubkey: payerTokenAccount, isSigner: false, isWritable: true },  // Player 1's token account (USDC)
                 { pubkey: player2TokenAccount, isSigner: false, isWritable: true },  // Player 2's token account (USDC)
                 { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },  // Token program for SPL tokens
-                { pubkey: usdcPriceAccount, isSigner: false, isWritable: false }, // Pyth Oracle
-                { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }, // System program
+                { pubkey: payer.publicKey, isSigner: true, isWritable: true },  // Player 1 (payer)
             ],
             programId: PROGRAM_ID,
             data: data, // Data to trigger the `settle_game` instruction
@@ -527,7 +521,7 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
             await sendAndConfirmTransaction(
                 connection,
                 transaction,
-                [payer, player2, escrowTokenAccountAuthority]  // Both players sign the transaction
+                [payer, escrowTokenAccountAuthority]  // Both players sign the transaction
             );
         } catch (error) {
             // Catch the error and handle the case when the game is inactive or Player 2 is missing

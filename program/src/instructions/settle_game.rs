@@ -20,14 +20,9 @@ pub fn settle_game(
     msg!("Entering the settle_game instruction");
     let accounts_iter = &mut accounts.iter();
 
-    let payer = next_account_info(accounts_iter)?; // Player 1
-    let player2 = next_account_info(accounts_iter)?; // Player 2
     let escrow_account = next_account_info(accounts_iter)?; // Escrow account holding the game state
-    let escrow_token_account_authority = next_account_info(accounts_iter)?;
-    let escrow_token_account = next_account_info(accounts_iter)?; // Escrow token account holding USDC
     let fund_token_account_player1 = next_account_info(accounts_iter)?; // Player 1's USDC token account
     let fund_token_account_player2 = next_account_info(accounts_iter)?; // Player 2's USDC token account
-    let token_program = next_account_info(accounts_iter)?; // SPL token program
     let oracle_account = next_account_info(accounts_iter)?;
 
     // Deserialize the current game state from the escrow account
