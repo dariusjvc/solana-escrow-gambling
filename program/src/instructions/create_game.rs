@@ -30,16 +30,13 @@ pub fn create_game(
     let oracle_account = next_account_info(accounts_iter)?;
     let system_program = next_account_info(accounts_iter)?; // System program
 
-    // Ensure that we are transferring the correct amount of USDC to the escrow token account (1000 USDC = 1,000,000 micro USDC)
-    let usdc_amount: u64 = 1_000_000; // USDC has 6 decimals, so 1000 USDC is represented as 1,000,000 in smallest units
+    let usdc_amount: u64 = 1000_000_000_000; // USDC Token created has 9 decimals, so 1000 USDC is represented as 1,000,000,000,000 in smallest units
 
     let player1_choice = instruction_data[1] != 0; // If the second byte is 1, player1_choice is true, otherwise it's false
 
-    //
     let entry_price_got = u64::from_le_bytes(instruction_data[2..10].try_into().unwrap());
     let last_price = entry_price_got;
     msg!("entry_price_got {:?}", entry_price_got);
-    //
 
     // Transfer 1000 USDC from payer's token account to the escrow token account
     invoke(

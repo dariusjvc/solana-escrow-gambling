@@ -18,7 +18,7 @@ let PATH_TO_YOUR_SOLANA_PLAYER2_JSON = path.resolve(__dirname, '../wallets/playe
 let PATH_TO_YOUR_SOLANA_GAME_JSON = path.resolve(__dirname, '../wallets/escrow.json');
 
 
-let DEPLOYED_PROGRAM_ADDRESS = "58QNbYYMeEhyGW5rKsjk2YyBC9f5AkjgPFTbEuZX2AWM"
+let DEPLOYED_PROGRAM_ADDRESS = "6Mc4zASiKHAUueojwYxEbiafTfuataSwYN2eNV3iaZGi"
 let PAYER_TOKEN_ACCOUNT = "Gq1tzLiyZTM4yDuz1cxGuzqXXUcS4pqYHe4vbb45sGLi"
 let PLAYER2_TOKEN_ACCOUNT = "Adwrz1Wyz2h36VJKSAtcAGWXWrm31KGmh2gVmJ8uYPYT"
 let SCROW_TOKEN_ACCOUNT = "A9ksdsvip87837jnUVNFnNQShu8uYG9qT6UipTr37bbN"
@@ -89,14 +89,22 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
 
 
     it("Create game", async () => {
+
+        const instruction_code = Buffer.from([0]);  // instruction_code as a single byte
+
         const player1_choice = true;  // Player 1 chooses 'increase'
-        const entry_price = 0;
+
+        //const entry_price = 0;
+        const entry_price = 100;
+
+        // The price has 8 decimal places
+        const entry_price_in_micro_usdc = Math.round(entry_price * 100_000_000);
 
         // Serialize the entry_price as u64 (8 bytes)
         const entry_price_buffer = Buffer.alloc(8);
-        entry_price_buffer.writeBigUInt64LE(BigInt(entry_price));
+        entry_price_buffer.writeBigUInt64LE(BigInt(entry_price_in_micro_usdc));
 
-        const instruction_code = Buffer.from([0]);  // instruction_code as a single byte
+
         const player1_choice_buffer = Buffer.from([player1_choice ? 1 : 0]);  // Convert boolean to 1 or 0
 
         // Concatenate the instruction_code, player1_choice, and entry_price buffers
@@ -221,15 +229,22 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
         //console.log(gameState);
 
     });
+
+
     it("Join game", async () => {
 
-        const last_price = 0;
-        //const last_price = 252967666666;
+
         const instruction_code = Buffer.from([2]);
+
+        //const last_price = 0;
+        const last_price = 100;
+
+        // The price has 8 decimal places
+        const last_price_in_micro_usdc = Math.round(last_price * 100_000_000);
 
         // Serialize the entry_price as u64 (8 bytes)
         const last_price_buffer = Buffer.alloc(8);
-        last_price_buffer.writeBigUInt64LE(BigInt(last_price));
+        last_price_buffer.writeBigUInt64LE(BigInt(last_price_in_micro_usdc));
 
         const data = Buffer.concat([instruction_code, last_price_buffer]);
         // Prepare the instruction for the join_game function
@@ -375,13 +390,18 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
 
     for (let i = 0; i < 1; i++) {
         it("Settle game", async () => {
-            const last_price = 0;
-            //const last_price = 300000000000;
+
             const instruction_code = Buffer.from([3]);
+
+            //const last_price = 0;
+            const last_price = 200;
+
+            // The price has 8 decimal places
+            const last_price_in_micro_usdc = Math.round(last_price * 100_000_000);
 
             // Serialize the entry_price as u64 (8 bytes)
             const last_price_buffer = Buffer.alloc(8);
-            last_price_buffer.writeBigUInt64LE(BigInt(last_price));
+            last_price_buffer.writeBigUInt64LE(BigInt(last_price_in_micro_usdc));
 
             const data = Buffer.concat([instruction_code, last_price_buffer]);
 
@@ -465,7 +485,6 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
             } else {
                 console.error("Test failed: Winner's public key does not match Player 1 or Player 2.");
             }
-
 
             if (gameState.game_active == false) {
                 console.log("Test passed: Game is inactive.");

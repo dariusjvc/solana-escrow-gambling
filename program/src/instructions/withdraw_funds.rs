@@ -34,7 +34,7 @@ pub fn withdraw_funds(
         return Err(ProgramError::InvalidAccountData); // Return an error indicating Player 2 is already set
     }
 
-    let usdc_amount: u64 = 1_000_000; // 1000 USDC in micro units
+    let usdc_amount: u64 = 1000_000_000_000; // USDC Token created has 9 decimals, so 1000 USDC is represented as 1,000,000,000,000 in smallest units
 
     // Ensure the escrow_token_account has the correct authority and ownership for SPL transfers
     invoke(
