@@ -27,23 +27,23 @@ The goal of this contract is to facilitate a game where two users compete by bet
   - The winner, once determined by a 5% price movement in their favor, calls the `closeGame` function to receive the entry fees.
 
 ## Clonning
-
+```
 git clone https://github.com/dariusjvc/solana-escrow-gambling.git
 cd solana-escrow-gambling
-
+```
 ## Dependencies
 
 After cloning the repository, run the following command to install the necessary dependencies:
-
+```
 npm install
-
+```
 
 ## Program Deployment
 
 To deploy the program, simply run:
-
+```
 ./cicd.sh
-
+```
 After compiling and deploying the program, it will return a `Program Id` similar to:
 
 Program Id: 2fzcvS5kvody5nhc252GiD2nUZCDsCYV61Gx2TvNRewp
@@ -56,27 +56,30 @@ This Program ID should be added to the test script (`tests/test.ts`) by setting 
 ### Running the Tests
 
 To execute the tests, use the following command:
-
+```
 npm test
-
-The program can fetch price data manually injected during tests, or if the value `0` is passed, it will automatically fetch prices from the Pyth Oracle on Solana's devnet.
+```
+The program can fetch price data manually injected during tests, or if the value `0` is passed, it will automatically fetch prices from the Pyth Oracle on Solana's devnet. If another value is passed, it uses that value.
 
 ### Test Descriptions
 
 1. **Create Game**:
-   - Parameter: `const entry_price = 0; // If 0, the price is fetched from the oracle. If another value is passed, it uses that value`.
+   - Injected parameter: 
+   const entry_price = 0; // If 0, the price is fetched from the Pyth Oracle
 
 2. **Oracle Price Test**:
    - No input injected parameters needed
 
 3. **Join Game**:
-   - Parameter: `const last_price = 0; // If 0, the price is fetched from the oracle. If another value is passed, it uses that value`.
+   - Injected parameter: 
+   const last_price = 0; // If 0, the price is fetched from the Pyth Oracle
 
 4. **Withdraw Game**:
    - No input injected parameters needed
 
 5. **Settle Game**:
-   - Parameter: `const last_price = 0; // If 0, the price is fetched from the Pyth Oracle`.
+   - Injected parameter: 
+   const last_price = 0; // If 0, the price is fetched from the Pyth Oracle
 
 ## Notes
 
