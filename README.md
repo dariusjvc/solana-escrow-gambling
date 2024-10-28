@@ -81,6 +81,9 @@ The program can fetch price data manually injected during tests, or if the value
    - Injected parameter: 
    const last_price = 0; // If 0, the price is fetched from the Pyth Oracle
 
+6. **Close Game**:
+   - No input injected parameters needed
+
 ## Notes
 
 - **Node Version**: Ensure you're using Node v18.20.4 or higher.

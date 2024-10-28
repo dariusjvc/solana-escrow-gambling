@@ -1,6 +1,6 @@
 use crate::instructions::{
     create_game::create_game, fetch_price::fetch_price, join_game::join_game,
-    settle_game::settle_game, withdraw_funds::withdraw_funds,
+    settle_game::settle_game, withdraw_funds::withdraw_funds, close_game::close_game,
 };
 use solana_program::{
     account_info::AccountInfo, entrypoint::ProgramResult, msg, program_error::ProgramError,
@@ -25,7 +25,8 @@ impl Processor {
             1 => fetch_price(program_id, accounts),// fetch_price
             2 => join_game(program_id, accounts, instruction_data),// Player joins
             3 => settle_game(program_id, accounts, instruction_data),// Settle the game and distribute winnings
-            4 => withdraw_funds(program_id, accounts),// 
+            4 => withdraw_funds(program_id, accounts),//
+            5 => close_game(program_id, accounts),//  
             _ => Err(ProgramError::InvalidInstructionData),
         }
     }

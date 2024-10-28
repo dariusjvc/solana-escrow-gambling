@@ -114,30 +114,8 @@ pub fn settle_game(
 
     msg!("Winner account {:?}", winner_token_account.key);
 
-    // Transfer 2000 USDC (2,000,000 micro USDC) from the escrow token account to the winner's token account
-    let usdc_amount: u64 = 2000_000_000_000; // 2000 USDC in micro units
-
-    // Ensure the escrow_token_account has the correct authority and ownership for SPL transfers
-    invoke(
-        &spl_transfer(
-            token_program.key,                  // SPL token program
-            escrow_token_account.key,           // Source account (escrow token account with USDC)
-            winner_token_account.key,           // Destination account (winner's USDC token account)
-            escrow_token_account_authority.key, // Authority (payer’s account)
-            &[],                                // No additional signers
-            usdc_amount,                        // Amount of USDC to transfer
-        )?,
-        &[
-            escrow_token_account_authority.clone(),
-            escrow_token_account.clone(),
-            winner_token_account.clone(),
-            token_program.clone(),
-        ],
-    )?;
-
     // Mark the game as inactive
     game_state.game_active = false;
-    // game_state.winner = *winner_token_account.key;
 
     let token_account_data = TokenAccount::unpack(&winner_token_account.try_borrow_data()?)?;
     let token_account_authority = token_account_data.owner;
@@ -156,7 +134,7 @@ pub fn settle_game(
         .try_borrow_mut_data()?
         .copy_from_slice(&game_state_data); // Write data back into the escrow account
 
-    msg!("Game settled successfully. Winner has been paid.");
+    msg!("Game settled successfully.");
 
     Ok(())
 }

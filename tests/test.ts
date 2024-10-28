@@ -18,7 +18,7 @@ let PATH_TO_YOUR_SOLANA_PLAYER2_JSON = path.resolve(__dirname, '../wallets/playe
 let PATH_TO_YOUR_SOLANA_GAME_JSON = path.resolve(__dirname, '../wallets/escrow.json');
 
 
-let DEPLOYED_PROGRAM_ADDRESS = "6Mc4zASiKHAUueojwYxEbiafTfuataSwYN2eNV3iaZGi"
+let DEPLOYED_PROGRAM_ADDRESS = "ArSLirHQbccsWPrvc5LNbLGZy6fLfqxkD3gHwHY3ssv4"
 let PAYER_TOKEN_ACCOUNT = "Gq1tzLiyZTM4yDuz1cxGuzqXXUcS4pqYHe4vbb45sGLi"
 let PLAYER2_TOKEN_ACCOUNT = "Adwrz1Wyz2h36VJKSAtcAGWXWrm31KGmh2gVmJ8uYPYT"
 let SCROW_TOKEN_ACCOUNT = "A9ksdsvip87837jnUVNFnNQShu8uYG9qT6UipTr37bbN"
@@ -117,7 +117,7 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
                 { pubkey: escrowTokenAccount, isSigner: false, isWritable: true },  // Escrow token account to hold USDC
                 { pubkey: payerTokenAccount, isSigner: false, isWritable: true },  // Player 1's USDC token account
                 { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },  // Token program to transfer USDC
-                { pubkey: usdcPriceAccount, isSigner: false, isWritable: false }, // Oráculo de precios
+                { pubkey: usdcPriceAccount, isSigner: false, isWritable: false }, // Pyth oracle
                 { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },  // System program
             ],
             programId: PROGRAM_ID,
@@ -140,7 +140,7 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
         const accountInfo = await connection.getAccountInfo(gameAccount.publicKey);
         const fundTokenBalance = await connection.getTokenAccountBalance(escrowTokenAccount);
 
-        console.log(`Escrow Token Account Balance: ${fundTokenBalance.value.uiAmount} USDC`);
+
 
         if (accountInfo === null) {
             console.error("Failed to create game account");
@@ -149,22 +149,23 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
 
             // Verify if Player 1's public key is correctly set in the game state
             if (new PublicKey(gameState.player1).equals(payer.publicKey)) {
-                console.log("Test passed: Player 1 correctly set.");
+                console.log("Test passed: Player 1 correctly set");
             } else {
-                console.error("Test failed: Player 1 not set correctly.");
+                console.error("Test failed: Player 1 not set correctly");
             }
 
             // Verify if the game is active
             if (gameState.game_active == true) {
-                console.log("Test passed: Game is active.");
+                console.log("Test passed: Game is active");
             } else {
-                console.error("Test failed: Game is not active.");
+                console.error("Test failed: Game is not active");
             }
 
             console.log(`Entry price is ${gameState.entry_price}`);
             console.log(`Last price is ${gameState.last_price}`);
 
         }
+        console.log(`Escrow Token Account Balance: ${fundTokenBalance.value.uiAmount} USDC`);
     });
 
 
@@ -203,9 +204,9 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
                     if (priceLog) {
                         const price = priceLog.split('Price of ETH/USDC: ')[1]; // Extract the price from the log
                         console.log(`The price of ETH/USDC is: ${price}`);
-                        console.log("Test passed: Price successfully retrieved.");
+                        console.log("Test passed: Price successfully retrieved");
                     } else {
-                        console.log('Price log not found.');
+                        console.log('Price log not found');
                     }
                 } else {
                     console.error('No logs found in the transaction.');
@@ -281,14 +282,14 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
 
                 // Check for the specific log message related to price fluctuation
                 if (logs.some(log => log.includes("Impossible to join Player 2, price fluctuation more than 1%"))) {
-                    console.log("Test valid: Player 2 could not join due to price fluctuation more than 1%.");
+                    console.log("Test valid: Player 2 could not join due to price fluctuation more than 1%");
                     // Treat this as a valid outcome and not a test failure
                     return;
                 } else {
                     console.error("Transaction logs:", logs);
                 }
             } else {
-                console.error("No logs available for this transaction.");
+                console.error("No logs available for this transaction");
             }
 
             throw error;
@@ -299,15 +300,15 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
         const gameState = deserializeGameState(accountInfo.data);
 
         if (new PublicKey(gameState.player2).equals(player2.publicKey)) {
-            console.log("Test passed: Player 2 correctly set.");
+            console.log("Test passed: Player 2 correctly set");
         } else {
-            console.error("Test failed: Player 2 not set correctly.");
+            console.error("Test failed: Player 2 not set correctly");
         }
 
         if (gameState.game_active == true) {
-            console.log("Test passed: Game is active.");
+            console.log("Test passed: Game is active");
         } else {
-            console.error("Test failed: Game is not active.");
+            console.error("Test failed: Game is not active");
         }
 
         // Fetch the fund token account balance to verify deposit
@@ -356,12 +357,12 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
                 const logs = error.logs;
                 // Check if Player 2 already exists and log a custom message
                 if (logs.some(log => log.includes("Player 2 already exists"))) {
-                    console.error("Impossible to withdraw: Player 2 already exists, withdrawal not allowed.");
+                    console.error("Impossible to withdraw: Player 2 already exists, withdrawal not allowed");
                 } else {
                     console.error("Transaction logs:", logs);
                 }
             } else {
-                console.error("No logs available for this transaction.");
+                console.error("No logs available for this transaction");
             }
         }
 
@@ -373,9 +374,9 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
 
 
         if (gameState.game_active == false) {
-            console.log("Test passed: Now the game is inactive.");
+            console.log("Test passed: Now the game is inactive");
         } else {
-            console.error("Test passed: Game is still active.");
+            console.error("Test passed: Game is still active");
         }
 
         const fundTokenBalance = await connection.getTokenAccountBalance(escrowTokenAccount);
@@ -443,17 +444,17 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
 
                     // Check if the logs contain the game inactive message
                     if (logs.some(log => log.includes("Impossible to settle game, game is inactive"))) {
-                        console.log("Test passed: Settle game failed because the game is inactive.");
+                        console.log("Test passed: Settle game failed because the game is inactive");
                     }
                     // Check if the logs contain the message about Player 2 missing
                     else if (logs.some(log => log.includes("Impossible to settle game, there is not a player2"))) {
-                        console.log("Test passed: Settle game failed because Player 2 is not present.");
+                        console.log("Test passed: Settle game failed because Player 2 is not present");
                     }
                     else {
                         console.error("Transaction failed with unexpected error:", logs);
                     }
                 } else {
-                    console.error("No logs available for this transaction.");
+                    console.error("No logs available for this transaction");
                 }
             }
 
@@ -465,9 +466,6 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
             const player1Balance = await connection.getTokenAccountBalance(payerTokenAccount);
             const player2Balance = await connection.getTokenAccountBalance(player2TokenAccount);
 
-            console.log(`Player 1 Token Balance: ${player1Balance.value.uiAmount} USDC`);
-            console.log(`Player 2 Token Balance: ${player2Balance.value.uiAmount} USDC`);
-
             // The winner should receive the 2000 USDC
             const escrowBalance = await connection.getTokenAccountBalance(escrowTokenAccount);
 
@@ -477,24 +475,93 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
             const winnerPubKey = new PublicKey(gameState.winner);
 
             if (winnerPubKey.equals(PublicKey.default)) {
-                console.log("There is no winner.");
+                console.log("There is no winner");
             } else if (winnerPubKey.equals(payer.publicKey)) {
-                console.log("Test passed: Player 1 is the winner.");
+                console.log("Test passed: Player 1 is the winner");
             } else if (winnerPubKey.equals(player2.publicKey)) {
-                console.log("Test passed: Player 2 is the winner.");
+                console.log("Test passed: Player 2 is the winner");
             } else {
-                console.error("Test failed: Winner's public key does not match Player 1 or Player 2.");
+                console.error("Test failed: Winner's public key does not match Player 1 or Player 2");
             }
 
             if (gameState.game_active == false) {
-                console.log("Test passed: Game is inactive.");
+                console.log("Test passed: Game is inactive");
             } else {
-                console.error("Game is still active.");
+                console.error("Game is still active");
             }
+
+            console.log(`Player 1 Token Balance: ${player1Balance.value.uiAmount} USDC`);
+            console.log(`Player 2 Token Balance: ${player2Balance.value.uiAmount} USDC`);
 
         });
 
     }
+
+
+    it("Close game", async () => {
+
+        const instruction_code = Buffer.from([5]);
+
+        const data = Buffer.concat([instruction_code]);
+
+        const instruction = new TransactionInstruction({
+            keys: [
+                { pubkey: payer.publicKey, isSigner: true, isWritable: true },  // Player 1 (payer)
+                { pubkey: player2.publicKey, isSigner: true, isWritable: true }, // Player 2
+                { pubkey: gameAccount.publicKey, isSigner: false, isWritable: true }, // Existing game account (escrow for game state, NOT lamports)
+                { pubkey: escrowTokenAccountAuthority.publicKey, isSigner: true, isWritable: true },  // Token account holding the USDC (Escrow token account)
+                { pubkey: escrowTokenAccount, isSigner: false, isWritable: true },  // Token account holding the USDC (Escrow token account)
+                { pubkey: payerTokenAccount, isSigner: false, isWritable: true },  // Player 1's token account (USDC)
+                { pubkey: player2TokenAccount, isSigner: false, isWritable: true },  // Player 2's token account (USDC)
+                { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },  // Token program for SPL tokens
+                { pubkey: usdcPriceAccount, isSigner: false, isWritable: false }, // Pyth Oracle
+                { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }, // System program
+            ],
+            programId: PROGRAM_ID,
+            data: data, // Data to trigger the `settle_game` instruction
+        });
+
+        const transaction = new Transaction().add(instruction);
+        const { blockhash } = await connection.getLatestBlockhash();
+        transaction.recentBlockhash = blockhash;
+
+        try {
+            // Send and confirm the transaction
+            await sendAndConfirmTransaction(
+                connection,
+                transaction,
+                [payer, player2, escrowTokenAccountAuthority]  // Both players sign the transaction
+            );
+        } catch (error) {
+            // Catch the error and handle the case when the game is inactive or Player 2 is missing
+            if (error.logs) {
+
+                //console.log("Transaction logs:", error.logs);
+                const logs = error.logs;
+                // Check if Player 2 already exists and log a custom message
+
+                if (logs.some(log => log.includes("Impossible to close game, game is still active"))) {
+                    console.error("Impossible to close: There game is still active, not allowed");
+                }
+                else if (logs.some(log => log.includes("Impossible to close game, there is no winner"))) {
+                    console.error("Impossible to close: There is no winner, not allowed");
+                } else {
+                    console.error("Transaction logs:", logs);
+                }
+
+            } else {
+                console.error("No logs available for this transaction");
+            }
+        }
+
+        // Check the USDC balances to confirm the winner
+        const player1Balance = await connection.getTokenAccountBalance(payerTokenAccount);
+        const player2Balance = await connection.getTokenAccountBalance(player2TokenAccount);
+
+        console.log(`Player 1 Token Balance: ${player1Balance.value.uiAmount} USDC`);
+        console.log(`Player 2 Token Balance: ${player2Balance.value.uiAmount} USDC`);
+
+    });
 
 });
 
