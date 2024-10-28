@@ -18,10 +18,10 @@ let PATH_TO_YOUR_SOLANA_PLAYER2_JSON = path.resolve(__dirname, '../wallets/playe
 let PATH_TO_YOUR_SOLANA_GAME_JSON = path.resolve(__dirname, '../wallets/escrow.json');
 
 
-let DEPLOYED_PROGRAM_ADDRESS = "ArSLirHQbccsWPrvc5LNbLGZy6fLfqxkD3gHwHY3ssv4"
-let PAYER_TOKEN_ACCOUNT = "Gq1tzLiyZTM4yDuz1cxGuzqXXUcS4pqYHe4vbb45sGLi"
-let PLAYER2_TOKEN_ACCOUNT = "Adwrz1Wyz2h36VJKSAtcAGWXWrm31KGmh2gVmJ8uYPYT"
-let SCROW_TOKEN_ACCOUNT = "A9ksdsvip87837jnUVNFnNQShu8uYG9qT6UipTr37bbN"
+let DEPLOYED_PROGRAM_ADDRESS = "FoqMdvAE1PEGyTMGBKrvhwAojWEH1n9soLLFBM7uvokE"
+let PAYER_TOKEN_ACCOUNT = "ESLp21gWPUmPMsTo4wJAPSVdY6hiBU4PPn8KuvqxgBKD"
+let PLAYER2_TOKEN_ACCOUNT = "6VCjhfe3njxWT4YqTKpQ7T6wkFHdn7QKpksfqa4wqiKj"
+let SCROW_TOKEN_ACCOUNT = "2E6TLrmeuzMitoRviPK5Fd4kiZPXj7MteZLxAppPDif6"
 const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 
 // Get oracles for mainnet here: https://www.pyth.network/developers/price-feed-ids#solana-stable
@@ -92,12 +92,12 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
 
         const instruction_code = Buffer.from([0]);  // instruction_code as a single byte
 
-        const player1_choice = true;  // Player 1 chooses 'increase'
+        const player1_choice = true;  // true- -> 'increase', false -> 'decrease'
 
         //const entry_price = 0;
         const entry_price = 100;
 
-        // The price has 8 decimal places
+        // The price given by the oracle has 8 decimal places
         const entry_price_in_micro_usdc = Math.round(entry_price * 100_000_000);
 
         // Serialize the entry_price as u64 (8 bytes)
@@ -541,7 +541,7 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
                 // Check if Player 2 already exists and log a custom message
 
                 if (logs.some(log => log.includes("Impossible to close game, game is still active"))) {
-                    console.error("Impossible to close: There game is still active, not allowed");
+                    console.error("Impossible to close: The game is still active, not allowed");
                 }
                 else if (logs.some(log => log.includes("Impossible to close game, there is no winner"))) {
                     console.error("Impossible to close: There is no winner, not allowed");

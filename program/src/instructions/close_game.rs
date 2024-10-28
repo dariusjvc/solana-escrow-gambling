@@ -67,8 +67,8 @@ pub fn close_game(
     }
 
 
-    // Transfer 2000 USDC (2,000,000 micro USDC) from the escrow token account to the winner's token account
-    let usdc_amount: u64 = 2000_000_000_000; // 2000 USDC in micro units
+    // Transfer 2000 USDC (2,000 micro USDC) from the escrow token account to the winner's token account
+    let usdc_amount: u64 = 2000_000_000; // 2000 USDC in micro units
 
     // Ensure the escrow_token_account has the correct authority and ownership for SPL transfers
     invoke(

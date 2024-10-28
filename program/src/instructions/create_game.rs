@@ -30,7 +30,7 @@ pub fn create_game(
     let oracle_account = next_account_info(accounts_iter)?;
     let system_program = next_account_info(accounts_iter)?; // System program
 
-    let usdc_amount: u64 = 1000_000_000_000; // USDC Token created has 9 decimals, so 1000 USDC is represented as 1,000,000,000,000 in smallest units
+    let usdc_amount: u64 = 1000_000_000; // USDC Token created has 6 decimals, so 1000 USDC is represented as 1,000,000,000 in smallest units
 
     let player1_choice = instruction_data[1] != 0; // If the second byte is 1, player1_choice is true, otherwise it's false
 

@@ -88,8 +88,8 @@ pub fn join_game(
         .try_borrow_mut_data()?
         .copy_from_slice(&game_state_data); // Store the serialized data into the account's data
 
-    // Transfer 1000 USDC (1,000,000 micro USDC) from Player 2's token account to the escrow token account
-    let usdc_amount: u64 = 1_000_000; // 1000 USDC in micro units
+    // Transfer 1000 USDC (1,000,000,000 micro USDC) from Player 2's token account to the escrow token account
+    let usdc_amount: u64 = 1_000_000_000; // 1000 USDC in micro units
     invoke(
         &spl_transfer(
             token_program.key,         // SPL token program
