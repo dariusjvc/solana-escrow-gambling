@@ -390,7 +390,6 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
     }
     );
 
-    for (let i = 0; i < 1; i++) {
         it("Settle game", async () => {
             logSeparator();
             const instruction_code = Buffer.from([3]);
@@ -496,8 +495,6 @@ describe("Tests of the escrow_program in the Solana devnet:", () => {
             console.log(`Last price: ${formatPrice(gameState.last_price)} ETH/USDC`);
 
         });
-
-    }
 
 
     it("Close game", async () => {
