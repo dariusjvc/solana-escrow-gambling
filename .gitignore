@@ -7,4 +7,5 @@ yarn.lock
 program/Cargo.lock
 /node_modules
 package-lock.json
+/wallets
 
