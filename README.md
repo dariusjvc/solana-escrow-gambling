@@ -38,14 +38,16 @@ After cloning the repository, run the following command to install the necessary
 npm install
 ```
 
-## Wallet Setup (IMPORTANT ⚠️)
+## Wallet Setup (IMPORTANT)
 
-Before deploying and running the program, you must create a folder named wallets at the root of the project and include the following wallet key files:
+Before deploying and running the program, you must create a folder named `wallets` at the root of the project and include the following key files:
 
+```
 /wallets/
  ├── escrow.json
  ├── payer.json
  ├── player2.json
+```
 
 These wallets should have sufficient balances for executing transactions.
 
