@@ -38,6 +38,17 @@ After cloning the repository, run the following command to install the necessary
 npm install
 ```
 
+## Wallet Setup (IMPORTANT ⚠️)
+
+Before deploying and running the program, you must create a folder named wallets at the root of the project and include the following wallet key files:
+
+/wallets/
+ ├── escrow.json
+ ├── payer.json
+ ├── player2.json
+
+These wallets should have sufficient balances for executing transactions.
+
 ## Program Deployment
 
 To deploy the program, simply run:
@@ -87,7 +98,7 @@ The program can fetch price data manually injected during tests, or if the value
 ## Notes
 
 - **Node Version**: Ensure you're using Node v18.20.4 or higher.
-- **Solana CLI Version**: Ensure you're using Solana CLI version 1.18.23 or higher.
+- **Solana CLI Version**: Ensure you're using Solana CLI version 1.18.26 or higher.
 
 
 ## Conclusion
