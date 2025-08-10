@@ -10,29 +10,35 @@ import {
 
 import * as borsh from "borsh";
 import { Buffer } from "buffer";
+import 'dotenv/config'; // esto carga automáticamente el .env desde la raíz
 
 const path = require('path');
-
-let PATH_TO_YOUR_SOLANA_PAYER_JSON = path.resolve(__dirname, '../wallets/payer.json');
-let PATH_TO_YOUR_SOLANA_PLAYER2_JSON = path.resolve(__dirname, '../wallets/player2.json');
-let PATH_TO_YOUR_SOLANA_GAME_JSON = path.resolve(__dirname, '../wallets/escrow.json');
-
-
-let DEPLOYED_PROGRAM_ADDRESS = "93mVQnmfpFYUbZkBLE14gTrsgUSC72PDHm1LjpQdUrzL"
-let PAYER_TOKEN_ACCOUNT = "ESLp21gWPUmPMsTo4wJAPSVdY6hiBU4PPn8KuvqxgBKD"
-let PLAYER2_TOKEN_ACCOUNT = "6VCjhfe3njxWT4YqTKpQ7T6wkFHdn7QKpksfqa4wqiKj"
-let SCROW_TOKEN_ACCOUNT = "2E6TLrmeuzMitoRviPK5Fd4kiZPXj7MteZLxAppPDif6"
-const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
-
-// Get oracles for mainnet here: https://www.pyth.network/developers/price-feed-ids#solana-stable
-// JBu1AL4obBcCMqKBBxhpWCNUt136ijcuMZLFvTP7iWdB (for Solana Mainnet)
-const usdcPriceAccount = new PublicKey("EdVCmQ9FSPcVe5YySXDPCRmc8aDQLKJ9xvYBMZPie1Vw"); // ETH/USDC Price Feed Account (Devnet)
 
 function createKeypairFromFile(path: string): Keypair {
     return Keypair.fromSecretKey(
         Buffer.from(JSON.parse(require('fs').readFileSync(path, "utf-8")))
     )
 };
+
+
+let PATH_TO_YOUR_SOLANA_PAYER_JSON   = process.env.PATH_TO_YOUR_SOLANA_PAYER_JSON!;
+let PATH_TO_YOUR_SOLANA_PLAYER2_JSON = process.env.PATH_TO_YOUR_SOLANA_PLAYER2_JSON!;
+let PATH_TO_YOUR_SOLANA_GAME_JSON    = process.env.PATH_TO_YOUR_SOLANA_GAME_JSON!;
+
+let DEPLOYED_PROGRAM_ADDRESS = process.env.DEPLOYED_PROGRAM_ADDRESS!;
+
+
+let PAYER_TOKEN_ACCOUNT    = process.env.PAYER_TOKEN_ACCOUNT!;
+let PLAYER2_TOKEN_ACCOUNT  = process.env.PLAYER2_TOKEN_ACCOUNT!;
+let SCROW_TOKEN_ACCOUNT    = process.env.SCROW_TOKEN_ACCOUNT!;
+
+
+const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+
+// Get oracles for mainnet here: https://www.pyth.network/developers/price-feed-ids#solana-stable
+// JBu1AL4obBcCMqKBBxhpWCNUt136ijcuMZLFvTP7iWdB (for Solana Mainnet)
+const usdcPriceAccount = new PublicKey("EdVCmQ9FSPcVe5YySXDPCRmc8aDQLKJ9xvYBMZPie1Vw"); // ETH/USDC Price Feed Account (Devnet)
+
 
 describe("Testing the escrow_program on the Solana devnet:", () => {
 

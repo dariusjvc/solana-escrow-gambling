@@ -41,18 +41,18 @@ pub fn create_game(
     // Transfer 1000 USDC from payer's token account to the escrow token account
     invoke(
         &spl_transfer(
-            token_program.key,        // SPL token program
-            payer_token_account.key,  // Source account (payer's USDC token account)
-            escrow_token_account.key, // Destination account (escrow USDC token account)
-            payer.key,                // Authority (payer's account)
-            &[],                      // No additional signers
-            usdc_amount,              // Amount of USDC to transfer
+            token_program.key,         // SPL token program ID
+            payer_token_account.key,   // Source token account
+            escrow_token_account.key,  // Destination token account
+            payer.key,                 // Authority (signer)
+            &[],                       // No multisig signers
+            usdc_amount,               // Amount
         )?,
         &[
-            payer.clone(),
-            payer_token_account.clone(),
-            escrow_token_account.clone(),
-            token_program.clone(),
+            payer_token_account.clone(),   // 0. Source token account
+            escrow_token_account.clone(),  // 1. Destination token account
+            payer.clone(),                 // 2. Authority
+            token_program.clone(),         // 3. Token program
         ],
     )?;
 
