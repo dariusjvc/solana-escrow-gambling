@@ -2,7 +2,7 @@
 
 ## Overview
 
-escrow-program is a smart contract built on Solana that facilitates a simple gambling game between two users. The game revolves around betting on the ETH/USDC price movement, where players bet whether the price will increase or decrease by 5%. The contract holds the entry fees in escrow and sends the funds to the winner once a price change condition is met.
+`escrow-program` is a smart contract built on Solana that facilitates a simple gambling game between two users. The game revolves around betting on the ETH/USDC price movement, where players bet whether the price will increase or decrease by 5%. The contract holds the entry fees in escrow and sends the funds to the winner once a price change condition is met.
 
 ## Task Overview
 
@@ -26,83 +26,84 @@ The goal of this contract is to facilitate a game where two users compete by bet
 - **Closing the game**:
   - The winner, once determined by a 5% price movement in their favor, calls the `closeGame` function to receive the entry fees.
 
-## Clonning
-```
+## Cloning
+```bash
 git clone https://github.com/dariusjvc/solana-escrow-gambling.git
 cd solana-escrow-gambling
 ```
+
 ## Dependencies
 
-After cloning the repository, run the following command to install the necessary dependencies:
-```
+After cloning the repository, install the necessary dependencies:
+```bash
 npm install
 ```
 
 ## Wallet Setup (IMPORTANT)
 
-Before deploying and running the program, you must create a folder named `wallets` at the root of the project and include the following key files:
-
+The program uses the default Solana wallet located at:
+```
+$HOME/.config/solana/id.json
+```
+This file replaces the previous `payer.json`. And it should have enough SOL for transaction fees.
+Additionally, two more wallets are used by the program:
 ```
 /wallets/
- ├── escrow.json
- ├── payer.json
- ├── player2.json
+ ├── escrow.json   # Escrow account for holding entry fees
+ ├── player2.json  # Player 2's wallet
 ```
 
-These wallets should have sufficient balances for executing transactions.
+These accounts, along with the token accounts to receive USDC winnings, are **automatically generated** when you run the initialization script:
 
-## Program Deployment
-
-To deploy the program, simply run:
+```bash
+./init_account.sh
 ```
+
+Ensure all wallets have enough SOL for transaction fees and the required USDC balances for testing.
+
+## Initialization and Deployment
+
+### 1. Initialize Token Accounts and Wallets
+Run:
+```bash
+./init_account.sh
+```
+
+### 2. Deploy the Program
+```bash
 ./cicd.sh
 ```
-After compiling and deploying the program, it will return a `Program Id` similar to:
+After deployment:
+- The `DEPLOYED_PROGRAM_ADDRESS` will be automatically written to your `.env` file.
 
-Program Id: 2fzcvS5kvody5nhc252GiD2nUZCDsCYV61Gx2TvNRewp
-
-This Program ID should be added to the test script (`tests/test.ts`) by setting the variable `DEPLOYED_PROGRAM_ADDRESS`.
-
-
-## Tests
-
-### Running the Tests
-
-To execute the tests, use the following command:
+Example `.env`:
 ```
-npm test
+DEPLOYED_PROGRAM_ADDRESS=CWUHyVZJdKRnbYDcSLFs9MSifMooXW2amXq69HuB4Mgu
 ```
-The program can fetch price data manually injected during tests, or if the value `0` is passed, it will automatically fetch prices from the Pyth Oracle on Solana's devnet. If another value is passed, it uses that value.
+
+## Running the Tests
+
+Once `.env` is updated:
+```bash
+npm run test
+```
 
 ### Test Descriptions
 
-1. **Create Game**:
-   - Injected parameter: 
-   const entry_price = 0; // If 0, the price is fetched from the Pyth Oracle
-
-2. **Oracle Price Test**:
-   - No input injected parameters needed
-
-3. **Join Game**:
-   - Injected parameter: 
-   const last_price = 0; // If 0, the price is fetched from the Pyth Oracle
-
-4. **Withdraw Game**:
-   - No input injected parameters needed
-
-5. **Settle Game**:
-   - Injected parameter: 
-   const last_price = 0; // If 0, the price is fetched from the Pyth Oracle
-
-6. **Close Game**:
-   - No input injected parameters needed
+1. **Create Game** – `entry_price = 0` fetches price from Pyth Oracle.
+2. **Oracle Price Test** – No parameters.
+3. **Join Game** – `last_price = 0` fetches price from Pyth Oracle.
+4. **Withdraw Game** – No parameters.
+5. **Settle Game** – `last_price = 0` fetches price from Pyth Oracle.
+6. **Close Game** – No parameters.
 
 ## Notes
 
-- **Node Version**: Ensure you're using Node v18.20.4 or higher.
-- **Solana CLI Version**: Ensure you're using Solana CLI version 1.18.26 or higher.
-
+- **Node Version**: v18.20.4 or higher.
+- **Solana CLI Version**: 2.3.7 (needed for updated account metas order in SPL token program).
+- Always run `init_account.sh` before `cicd.sh` in a fresh setup.
+- The `id.json` wallet replaces the old `payer.json` and is used as the main payer for transactions.
 
 ## Conclusion
 
-This program demonstrates a simple escrow-based gambling game on Solana, using Pyth Oracle for real-time price data. Feel free to run the tests, review the contract logic, and adjust parameters as needed for your use case.
+This program demonstrates a simple escrow-based gambling game on Solana, integrating with the Pyth Oracle for real-time price data. It is a fully tested, ready-to-deploy base for more advanced escrow or betting applications.
