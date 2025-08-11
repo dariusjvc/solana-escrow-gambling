@@ -18,7 +18,7 @@ solana config get
 # =========================
 PAYER_KEYPAIR="$HOME/.config/solana/id.json"
 if [ ! -f "$PAYER_KEYPAIR" ]; then
-  echo "Doesn't exist $PAYER_KEYPAIR"
+  echo "$PAYER_KEYPAIR not found. Create it with: solana-keygen new"
   exit 1
 fi
 PAYER_PK=$(solana-keygen pubkey "$PAYER_KEYPAIR")
@@ -29,7 +29,7 @@ echo "PAYER_PK:    $PAYER_PK"
 # =========================
 PLAYER2_KEYPAIR="$WALLETS_DIR/player2.json"
 if [ ! -f "$PLAYER2_KEYPAIR" ]; then
-  echo "Creating keypair: player2.json"
+  echo "Generating keypair: player2.json"
   solana-keygen new --no-bip39-passphrase --outfile "$PLAYER2_KEYPAIR" >/dev/null
 fi
 PLAYER2_PK=$(solana-keygen pubkey "$PLAYER2_KEYPAIR")
@@ -40,7 +40,7 @@ echo "PLAYER2_PK:  $PLAYER2_PK"
 # =========================
 ESCROW_KEYPAIR="$WALLETS_DIR/escrow.json"
 if [ ! -f "$ESCROW_KEYPAIR" ]; then
-  echo "🔐 Creating keypair: escrow.json"
+  echo "Generating keypair: escrow.json"
   solana-keygen new --no-bip39-passphrase --outfile "$ESCROW_KEYPAIR" >/dev/null
 fi
 ESCROW_AUTH=$(solana-keygen pubkey "$ESCROW_KEYPAIR")
@@ -55,7 +55,7 @@ CREATE_OUT=$(spl-token create-token --decimals 6 --fee-payer "$PAYER_KEYPAIR")
 MINT=$(echo "$CREATE_OUT" | grep -Eo '([1-9A-HJ-NP-Za-km-z]{32,44})' \
   | grep -v '^TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA$' | head -n1)
 if [[ -z "$MINT" ]]; then
-  echo "❌ No pude extraer el MINT:"
+  echo "Could not extract MINT from command output:"
   echo "$CREATE_OUT"
   exit 1
 fi
@@ -67,7 +67,6 @@ echo "MINT:        $MINT"
 calc_ata() {
   local mint="$1"
   local owner="$2"
-  # La última línea del --verbose es la dirección del ATA
   spl-token address --token "$mint" --owner "$owner" --verbose \
     | grep -Eo '([1-9A-HJ-NP-Za-km-z]{32,44})' | tail -n1
 }
@@ -77,8 +76,8 @@ create_ata() {
   local owner="$2"
   local fee_payer="$3"
 
-# Create the ATA for "owner" paying with "fee_payer"
-# If it already exists, the command returns an error: we ignore it with "|| true"
+# Create the ATA for "owner" using "fee_payer" for fees.
+# If it already exists, the command fails; ignore the error with "|| true".
   spl-token create-account "$mint" \
     --owner "$owner" \
     --fee-payer "$fee_payer" >/dev/null 2>&1 || true
@@ -89,7 +88,7 @@ mint_to() {
   local raw_amount="$2"
   local recipient_ata="$3"
   local fee_payer="$4"
-
+# Mint raw_amount tokens to the recipient's ATA using fee_payer for fees
   spl-token mint "$mint" "$raw_amount" "$recipient_ata" \
     --fee-payer "$fee_payer" >/dev/null
 }
@@ -137,7 +136,7 @@ echo "🪙 Mint a player2: $MINT_AMOUNT_UI_P2 (raw=$RAW_P2)"
 mint_to "$MINT" "$RAW_P2" "$PLAYER2_ATA" "$PAYER_KEYPAIR"
 
 # =========================
-# Fill out .env
+# Write  .env
 # =========================
 cat > .env <<EOL
 # Generado por test.sh
