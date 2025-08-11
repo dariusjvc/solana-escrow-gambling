@@ -74,12 +74,7 @@ Run:
 ./cicd.sh
 ```
 After deployment:
-- The `DEPLOYED_PROGRAM_ADDRESS` will be automatically written to your `.env` file.
-
-Example `.env`:
-```
-DEPLOYED_PROGRAM_ADDRESS=CWUHyVZJdKRnbYDcSLFs9MSifMooXW2amXq69HuB4Mgu
-```
+- The `DEPLOYED_PROGRAM_ADDRESS` and the rest of the variables will be automatically written to your `.env` file.
 
 ## Running the Tests
 
