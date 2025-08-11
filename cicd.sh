@@ -23,13 +23,13 @@ solana config set --keypair "$DEVNET_FEE_PAYER" >/dev/null
 
 # 0) Program keypair (if it doesn't exist)
 if [ ! -f "$PROGRAM_KEYPAIR" ]; then
-  echo "🔐 Generando program keypair (no existía): $PROGRAM_KEYPAIR"
+  echo "Generating program keypair: $PROGRAM_KEYPAIR"
   mkdir -p "$(dirname "$PROGRAM_KEYPAIR")"
   solana-keygen new --no-bip39-passphrase --outfile "$PROGRAM_KEYPAIR" >/dev/null
 fi
 
 # 1) Compiling
-echo "📦 Compiling...BPF..."
+echo "Compiling...BPF..."
 cargo build-bpf --manifest-path=./program/Cargo.toml --bpf-out-dir=./program/target/so
 
 # 2) Verify .so
@@ -40,7 +40,7 @@ fi
 
 # 3) Program ID
 PROGRAM_ID=$(solana-keygen pubkey "$PROGRAM_KEYPAIR")
-echo "🆔 Program ID: $PROGRAM_ID"
+echo "Program ID: $PROGRAM_ID"
 
 # 4) Initial balance
 FEE_PAYER_PK=$(solana-keygen pubkey "$DEVNET_FEE_PAYER")
@@ -49,7 +49,7 @@ INITIAL_BALANCE=$(get_balance)
 
 # 5) Deploy o upgrade
 if solana program show "$PROGRAM_ID" &>/dev/null; then
-  echo "Upgrading programa existente: $PROGRAM_ID"
+  echo "Upgrading existing program: $PROGRAM_ID"
 
   CURRENT_SIZE=$(solana program show "$PROGRAM_ID" | grep 'Data Length' | awk '{print $3}')
   NEW_SIZE=$(stat -c%s "$PROGRAM_SO")
@@ -97,4 +97,4 @@ fi
 # 6) Balance
 FINAL_BALANCE=$(get_balance)
 SOL_USED=$(awk "BEGIN {print $INITIAL_BALANCE - $FINAL_BALANCE}")
-echo "💸 Total SOL usado: $SOL_USED SOL"
+echo "Total SOL used: $SOL_USED SOL"
