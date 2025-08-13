@@ -15,7 +15,11 @@ pub fn fetch_price(_program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramRes
     let oracle_account = &accounts[0];
     let escrow_account = &accounts[1]; // Escrow account for game state
 
+    msg!("Oracle account pubkey: {}", oracle_account.key);
+    msg!("Escrow account pubkey: {}", escrow_account.key);
+
     // Load the price feed from the oracle account
+    msg!("Loading price feed from oracle account...");
     let price_feed_result: Result<PriceFeed, PythError> =
         load_price_feed_from_account_info(oracle_account);
 
@@ -26,18 +30,22 @@ pub fn fetch_price(_program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramRes
     };
 
     // Fetch the current price from the price feed
+    msg!("Fetching current ETH/USDC price from price feed...");
     let price = price_feed
         .get_current_price()
         .ok_or(ProgramError::InvalidAccountData)?;
 
-    msg!("Price of ETH/USDC: {}", price.price);
+    msg!("Fetched price of ETH/USDC from oracle: {}", price.price);
 
     // Deserialize the current game state from the escrow account
+    msg!("Deserializing current game state from escrow account...");
     let mut game_state = GameState::try_from_slice(&escrow_account.try_borrow_data()?)?;
 
     //Updating the last price with the price obtained from the oracle
     game_state.last_price = price.price as u64;
 
+    // Serialize and store the updated game state back into the escrow account
+    msg!("Serializing updated game state and storing in escrow account...");
     let game_state_data = game_state.try_to_vec()?;
 
     escrow_account
