@@ -35,7 +35,7 @@ pub fn fetch_price(_program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramRes
         .get_current_price()
         .ok_or(ProgramError::InvalidAccountData)?;
 
-    msg!("Fetched price of ETH/USDC from oracle: {}", price.price);
+    msg!("Price of ETH/USDC: {}", price.price);
 
     // Deserialize the current game state from the escrow account
     msg!("Deserializing current game state from escrow account...");
