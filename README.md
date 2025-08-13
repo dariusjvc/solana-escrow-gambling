@@ -45,7 +45,7 @@ The program uses the default Solana wallet located at:
 ```
 $HOME/.config/solana/id.json
 ```
-This file replaces the previous `payer.json`. And it should have enough SOL for transaction fees.
+This file represents both the payer and the account of the player1. It should have enough SOL for transaction fees.
 Additionally, two more wallets are used by the program:
 ```
 /wallets/
