@@ -60,5 +60,7 @@ pub fn withdraw_funds(
         .try_borrow_mut_data()?
         .copy_from_slice(&game_state_data);
 
+    msg!("Funds withdrawn successfully: {} USDC transferred from escrow to {}", usdc_amount, fund_token_account_player1.key);
+
     Ok(())
 }

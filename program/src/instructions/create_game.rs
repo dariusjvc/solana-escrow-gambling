@@ -123,5 +123,7 @@ pub fn create_game(
         .try_borrow_mut_data()?
         .copy_from_slice(&updated_game_state_data); // Store the serialized data into the account's data
 
+    msg!("Game created successfully");
+
     Ok(())
 }

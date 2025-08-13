@@ -44,5 +44,7 @@ pub fn fetch_price(_program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramRes
         .try_borrow_mut_data()?
         .copy_from_slice(&game_state_data); // Store the serialized data into the account's data
 
+    msg!("Price fetched successfully from oracle and stored in game state: {}", game_state.last_price);
+
     Ok(())
 }
