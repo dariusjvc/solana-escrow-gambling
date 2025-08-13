@@ -10,7 +10,7 @@ import {
 
 import * as borsh from "borsh";
 import { Buffer } from "buffer";
-import 'dotenv/config'; // esto carga automáticamente el .env desde la raíz
+import 'dotenv/config';
 
 const path = require('path');
 
@@ -20,18 +20,15 @@ function createKeypairFromFile(path: string): Keypair {
     )
 };
 
-
 let PATH_TO_YOUR_SOLANA_PAYER_JSON   = process.env.PATH_TO_YOUR_SOLANA_PAYER_JSON!;
 let PATH_TO_YOUR_SOLANA_PLAYER2_JSON = process.env.PATH_TO_YOUR_SOLANA_PLAYER2_JSON!;
 let PATH_TO_YOUR_SOLANA_GAME_JSON    = process.env.PATH_TO_YOUR_SOLANA_GAME_JSON!;
 
 let DEPLOYED_PROGRAM_ADDRESS = process.env.DEPLOYED_PROGRAM_ADDRESS!;
 
-
 let PAYER_TOKEN_ACCOUNT    = process.env.PAYER_TOKEN_ACCOUNT!;
 let PLAYER2_TOKEN_ACCOUNT  = process.env.PLAYER2_TOKEN_ACCOUNT!;
 let SCROW_TOKEN_ACCOUNT    = process.env.SCROW_TOKEN_ACCOUNT!;
-
 
 const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 
@@ -42,9 +39,7 @@ const usdcPriceAccount = new PublicKey("EdVCmQ9FSPcVe5YySXDPCRmc8aDQLKJ9xvYBMZPi
 
 describe("Testing the escrow_program on the Solana devnet:", () => {
 
-    const connection = new Connection(`https://api.devnet.solana.com`, 'confirmed'); // For solana devnet
-    //const connection = new Connection(`http://localhost:8899`, 'confirmed'); // For solana test validator
-    //const connection = new Connection(`https://api.mainnet-beta.solana.com`, 'confirmed'); // For solana mainnet
+    const connection = new Connection(`https://api.devnet.solana.com`, 'confirmed');
 
     const payer = createKeypairFromFile(PATH_TO_YOUR_SOLANA_PAYER_JSON);
     const player2 = createKeypairFromFile(PATH_TO_YOUR_SOLANA_PLAYER2_JSON);
@@ -85,10 +80,6 @@ describe("Testing the escrow_program on the Solana devnet:", () => {
         [GameState, { kind: 'struct', fields: [['player1', [32]], ['player2', [32]], ['player1_choice', 'u8'], ['player2_choice', 'u8'], ['entry_price', 'u64'], ['last_price', 'u64'], ['game_active', 'u8'], ['winner', [32]]] }]
     ]);
 
-    function serializeGameState(gameState: GameState): Buffer {
-        return Buffer.from(borsh.serialize(GameStateSchema, gameState));
-    }
-
     function deserializeGameState(buffer: Buffer): GameState {
         return borsh.deserialize(GameStateSchema, GameState, buffer);
     }
@@ -96,7 +87,7 @@ describe("Testing the escrow_program on the Solana devnet:", () => {
     it("Create game", async () => {
         logSeparator();
 
-        const instruction_code = Buffer.from([0]);  // instruction_code as a single byte
+        const instruction_code = Buffer.from([0]);
 
         const player1_choice = true;  // true- -> 'increase', false -> 'decrease'
 
@@ -182,13 +173,12 @@ describe("Testing the escrow_program on the Solana devnet:", () => {
                 { pubkey: usdcPriceAccount, isSigner: false, isWritable: false }, // Oráculo de precios
                 { pubkey: gameAccount.publicKey, isSigner: false, isWritable: true },  // Escrow account for game state
             ],
-            programId: PROGRAM_ID, // ID del programa en Solana
-            data: Buffer.from([1]), // No se necesita data adicional para esta consulta
+            programId: PROGRAM_ID,
+            data: Buffer.from([1]), 
         });
 
         const transaction = new Transaction().add(instruction);
 
-        // Envía y confirma la transacción
         try {
             // Get the latest blockhash
             const { blockhash } = await connection.getLatestBlockhash();
@@ -230,12 +220,6 @@ describe("Testing the escrow_program on the Solana devnet:", () => {
             console.error('Error querying the oracle price:', error);
             throw new Error(`Transaction failed: ${error.message}`);
         }
-
-        const accountInfo = await connection.getAccountInfo(gameAccount.publicKey);
-        const gameState = deserializeGameState(accountInfo.data);
-
-        //console.log(gameState);
-
     });
 
 
@@ -278,11 +262,10 @@ describe("Testing the escrow_program on the Solana devnet:", () => {
             await sendAndConfirmTransaction(
                 connection,
                 transaction,
-                [payer, player2] // Signers: Player 1 and Player 2
+                [payer, player2]
             );
 
         } catch (error) {
-            // Catch the error and handle specific cases based on logs
             if (error.logs) {
                 const logs = error.logs;
 
@@ -436,13 +419,11 @@ describe("Testing the escrow_program on the Solana devnet:", () => {
                 await sendAndConfirmTransaction(
                     connection,
                     transaction,
-                    [payer]  // Both players sign the transaction
+                    [payer]
                 );
             } catch (error) {
                 // Catch the error and handle the case when the game is inactive or Player 2 is missing
                 if (error.logs) {
-
-                    //console.log("Transaction logs:", error.logs);
                     const logs = error.logs;
 
                     // Check if the logs contain the game inactive message
