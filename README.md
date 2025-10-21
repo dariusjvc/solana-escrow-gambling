@@ -56,7 +56,7 @@ Additionally, two more wallets are used by the program:
 These accounts, along with the token accounts to receive USDC winnings, are **automatically generated** when you run the initialization script:
 
 ```bash
-./init_account.sh
+./init_accounts.sh
 ```
 
 Ensure all wallets have enough SOL for transaction fees and the required USDC balances for testing.
@@ -66,7 +66,7 @@ Ensure all wallets have enough SOL for transaction fees and the required USDC ba
 ### 1. Initialize Token Accounts and Wallets
 Run:
 ```bash
-./init_account.sh
+./init_accounts.sh
 ```
 
 ### 2. Deploy the Program
@@ -96,7 +96,7 @@ npm run test
 
 - **Node Version**: v18.20.4 or higher.
 - **Solana CLI Version**: 2.3.7 (needed for updated account metas order in SPL token program).
-- Always run `init_account.sh` before `cicd.sh` in a fresh setup.
+- Always run `init_accounts.sh` before `cicd.sh` in a fresh setup.
 - The `id.json` wallet replaces the old `payer.json` and is used as the main payer for transactions.
 
 ## Conclusion
