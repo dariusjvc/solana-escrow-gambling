@@ -29,8 +29,8 @@ if [ ! -f "$PROGRAM_KEYPAIR" ]; then
 fi
 
 # 1) Compiling
-echo "Compiling...BPF..."
-cargo build-bpf --manifest-path=./program/Cargo.toml --bpf-out-dir=./program/target/so
+echo "Compiling...SBF..."
+cargo build-sbf --manifest-path=./program/Cargo.toml --sbf-out-dir=./program/target/so
 
 # 2) Verify .so
 if [ ! -f "$PROGRAM_SO" ]; then
