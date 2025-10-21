@@ -8,17 +8,19 @@ import {
     TransactionInstruction,
 } from '@solana/web3.js';
 
+import { readFileSync } from 'fs';
+
+
 import * as borsh from "borsh";
 import { Buffer } from "buffer";
 import 'dotenv/config';
 
-const path = require('path');
+function createKeypairFromFile(filePath: string): Keypair {
+  return Keypair.fromSecretKey(
+    Buffer.from(JSON.parse(readFileSync(filePath, "utf-8")))
+  );
+}
 
-function createKeypairFromFile(path: string): Keypair {
-    return Keypair.fromSecretKey(
-        Buffer.from(JSON.parse(require('fs').readFileSync(path, "utf-8")))
-    )
-};
 
 let PATH_TO_YOUR_SOLANA_PAYER_JSON   = process.env.PATH_TO_YOUR_SOLANA_PAYER_JSON!;
 let PATH_TO_YOUR_SOLANA_PLAYER2_JSON = process.env.PATH_TO_YOUR_SOLANA_PLAYER2_JSON!;
